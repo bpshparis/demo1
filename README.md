@@ -117,3 +117,55 @@ EOF
 curl -H "Content-Type: application/json" -X POST -u $CRED -d @intent0.json ${URL}/${WKS_ID}/intents?version=$VER
 ```
 
+## Create object defining the content of the new intent
+
+```
+cat > intent1.json << EOF
+{
+  "intent": "aurevoir",
+  "examples": [
+    {
+      "text": "Au revoir"
+    },
+    {
+      "text": "Salut"
+    },
+    {
+      "text": "A plus"
+    },
+    {
+      "text": "Tchao"
+    }
+  ]
+}
+EOF
+```
+
+## Create the intent base on the content of the object created above
+
+```
+curl -H "Content-Type: application/json" -X POST -u $CRED -d @intent1.json ${URL}/${WKS_ID}/intents?version=$VER
+```
+
+## create CreateDialogNode object defining the content of the new dialog node
+
+```
+cat > dialog_node0.json << EOF
+{
+  "dialog_node": "bienvenue",
+  "conditions": "#bonjour",
+  "output": {
+    "text": "Bonjour, que puis-je faire qui vous obligerez ?"
+  },
+  "title": "Bienvenue"
+}
+EOF
+```
+
+## create the dialog node base on the content of the object created above
+
+```
+curl -H "Content-Type: application/json" -X POST -u $CRED -d @dialog_node0.json ${URL}/${WKS_ID}/dialog_nodes?version=$VER
+```
+
+
