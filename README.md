@@ -42,6 +42,24 @@ cf cs conversation free cb0
 cf csk cb0 user0
 ```
 
+## Build url to use to use Language Translator service and store it in URL environment variable
+
+```
+export URL=$(cf service-key cb0 user0 | awk 'NR>=2' | jq -r '.url + "/v1/workspaces"')
+```
+
+## Build credential string to use Language Translator service and store it in CRED environment variable
+
+```
+export CRED=$(cf service-key cb0 user0 | awk 'NR>=2' | jq -r '.username + ":" + .password')
+```
+
+## Store Conversation current version in VER environment variable
+
+```
+export VER=2018-02-16
+```
+
 ## Create CreateWorkspace object defining the content of the new workspace
 
 ```
@@ -57,5 +75,45 @@ cat > wks0.json << EOF
 EOF
 ```
 
+## Create a workspace based on JSON wks0.json input
 
+```
+curl -H "Content-Type: application/json" -X POST -u $CRED -d @wks0.json ${URL}?version=$VER
+```
+
+## Store the workspace id in WKS_ID environment variable
+
+```
+export WKS_ID=$(curl -u $CRED $URL?version=$VER | jq -r '.workspaces[0].workspace_id')
+```
+
+## Create object defining the content of the new intent
+
+```
+cat > intent0.json << EOF
+{
+  "intent": "bonjour",
+  "examples": [
+    {
+      "text": "Bonjour"
+    },
+    {
+      "text": "Salut"
+    },
+    {
+      "text": "Yo"
+    },
+    {
+      "text": "Kenavo"
+    }
+  ]
+}
+EOF
+```
+
+## Create the intent base on the content of the object created above
+
+```
+curl -H "Content-Type: application/json" -X POST -u $CRED -d @intent0.json ${URL}/${WKS_ID}/intents?version=$VER
+```
 
