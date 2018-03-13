@@ -29,8 +29,33 @@ cf marketplace | tee marketplace.de
 ```
 grep -i conversation marketplace.de
 ```
-## Create Conversation service
+
+## Creating Conversation service instance cb0
 
 ```
 cf cs conversation free cb0
 ```
+
+## Creating service key user0 for service instance cb0
+
+```
+cf csk cb0 user0
+```
+
+## Create CreateWorkspace object defining the content of the new workspace
+
+```
+cat > wks0.json << EOF
+{
+  "name": "wks0",
+  "intents": [],
+  "entities": [],
+  "dialog_nodes": [],
+  "language": "fr",
+  "description": "workspace 0"
+}
+EOF
+```
+
+
+
